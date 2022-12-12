@@ -1,9 +1,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-struct item
+struct shoppingItem
 {
     string name;
     int amount;
@@ -26,28 +27,41 @@ void printShoppingList()
 
 void printTotalPrice() {}
 
-void removeByName(string userInput)
+void removeByName()
 {
+    printf("Please Input Name of Item You Want to Remove\n");
 }
 
-void addByName(string userInput)
+void addByName()
 {
-}
+    fstream file;
+    file.open("shopping-list.txt", ios::app);
+    if (!file.is_open())
+    {
+        cout << "Error" << endl;
+        return;
+    }
+    string itemName;
+    int itemAmount;
+    double itemPrice;
 
-void getInput(string text, string &userInput)
-{
-    cout << text << endl;
-    cin >> userInput;
+    printf("Please Type Name of Item\n");
+    cin >> itemName;
+
+    printf("Please Type Amount of Item\n");
+    cin >> itemAmount;
+
+    printf("Please Type Price of Item\n");
+    cin >> itemPrice;
+
+    file << itemName << " ";
+    file << itemAmount << " ";
+    file << itemPrice << endl;
 }
 
 int main()
 {
-
     char primary_input;
-
-    string secondary_input;
-
-    string inputStr;
 
     do
     {
@@ -77,15 +91,11 @@ int main()
             break;
         case 'r':
         case 'R':
-            inputStr = "Please Input Name of Item You Want to Remove";
-            getInput(inputStr, secondary_input);
-            removeByName(secondary_input);
+            removeByName();
             break;
         case 'a':
         case 'A':
-            inputStr = "Please Input Name of Item You Want to Add";
-            getInput(inputStr, secondary_input);
-            addByName(secondary_input);
+            addByName();
             break;
         case 'q':
         case 'Q':
