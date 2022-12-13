@@ -14,6 +14,9 @@ struct shoppingItem
 
 bool updateTxtFile(vector<shoppingItem> &shoppingList)
 {
+    if (shoppingList.size() == 0)
+        return true;
+
     fstream file;
     file.open("shopping-list.txt", ios::out | ios::binary);
 
@@ -90,6 +93,12 @@ void removeByName(vector<shoppingItem> &shoppingList)
     string input;
     bool inVector = false;
     int i;
+
+    if (shoppingList.size() == 0)
+    {
+        printf("Shopping List is Empty\n");
+        return;
+    }
 
     do
     {
