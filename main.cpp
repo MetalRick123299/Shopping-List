@@ -12,6 +12,32 @@ struct shoppingItem
     double price;
 };
 
+bool updateTxtFile(vector<shoppingItem> &shoppingList)
+{
+    fstream file;
+    file.open("shopping-list.txt", ios::out | ios::binary);
+
+    if (!file.is_open())
+        return false;
+
+    for (int i = 0; i < shoppingList.size(); i++)
+    {
+        shoppingItem curr = shoppingList.at(i);
+
+        // cout << curr.name << "\n";
+        // cout << curr.amount << "\n";
+        // cout << curr.price << "\n";
+
+        file << curr.name << " ";
+        file << curr.amount << " ";
+        file << curr.price << endl;
+    }
+
+    file.close();
+
+    return true;
+}
+
 void getShoppingList(vector<shoppingItem> &shoppingList)
 {
     fstream file;
@@ -43,7 +69,6 @@ void getShoppingList(vector<shoppingItem> &shoppingList)
 
 void printShoppingList(vector<shoppingItem> shoppingList)
 {
-
     if (shoppingList.size() == 0)
     {
         printf("Shopping List is Empty\n");
@@ -96,30 +121,12 @@ void removeByName(vector<shoppingItem> &shoppingList)
         return;
     }
 
-    fstream file;
-    file.open("shopping-list.txt", ios::out | ios::binary);
+    shoppingList.erase(shoppingList.begin() + i);
 
-    if (!file.is_open())
+    if (!updateTxtFile(shoppingList))
     {
         printf("Error: unable to delete item\nTry Again");
     }
-
-    shoppingList.erase(shoppingList.begin() + i);
-
-    for (int i = 0; i < shoppingList.size(); i++)
-    {
-        shoppingItem curr = shoppingList.at(i);
-
-        cout << curr.name << "\n";
-        cout << curr.amount << "\n";
-        cout << curr.price << "\n";
-
-        file << curr.name << " ";
-        file << curr.amount << " ";
-        file << curr.price << endl;
-    }
-
-    file.close();
 }
 
 void addByName(vector<shoppingItem> &shoppingList)
@@ -197,6 +204,7 @@ int main()
             break;
         case 'q':
         case 'Q':
+            updateTxtFile(shoppingList);
             cout << "Bye!" << endl;
             break;
         default:
