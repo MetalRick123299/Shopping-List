@@ -14,14 +14,17 @@ struct shoppingItem
 
 bool updateTxtFile(vector<shoppingItem> &shoppingList)
 {
-    if (shoppingList.size() == 0)
-        return true;
 
     fstream file;
     file.open("shopping-list.txt", ios::out | ios::binary);
 
     if (!file.is_open())
         return false;
+
+    if (shoppingList.size() == 0)
+    {
+        file << "";
+    }
 
     for (int i = 0; i < shoppingList.size(); i++)
     {
@@ -43,6 +46,8 @@ bool updateTxtFile(vector<shoppingItem> &shoppingList)
 
 void getShoppingList(vector<shoppingItem> &shoppingList)
 {
+    shoppingList.clear();
+
     fstream file;
     file.open("shopping-list.txt", ios::in);
     if (!file.is_open())
@@ -86,7 +91,21 @@ void printShoppingList(vector<shoppingItem> shoppingList)
     }
 }
 
-void printTotalPrice(vector<shoppingItem> &shoppingList) {}
+void printTotalPrice(vector<shoppingItem> &shoppingList)
+{
+    double totalPrice = 0.00;
+
+    if (shoppingList.size() != 0)
+    {
+        for (int i = 0; i < shoppingList.size(); i++)
+        {
+            shoppingItem current = shoppingList.at(i);
+            totalPrice += current.amount * current.price;
+        }
+    }
+
+    cout << "Total Price of All Items is " << totalPrice << endl;
+}
 
 void removeByName(vector<shoppingItem> &shoppingList)
 {
@@ -186,6 +205,7 @@ int main()
         cout << "*    - t: Gets total price of the List    *" << endl;
         cout << "*    - r: Removes item by name            *" << endl;
         cout << "*    - a: Add item into list              *" << endl;
+        cout << "*    - u: Update list from Text File      *" << endl;
         cout << "*    - q: quit                            *" << endl;
         cout << "*******************************************" << endl;
         // get user input
@@ -210,6 +230,10 @@ int main()
         case 'a':
         case 'A':
             addByName(shoppingList);
+            break;
+        case 'u':
+        case 'U':
+            getShoppingList(shoppingList);
             break;
         case 'q':
         case 'Q':
