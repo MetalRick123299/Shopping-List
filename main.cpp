@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 using namespace std;
@@ -11,28 +12,117 @@ struct shoppingItem
     double price;
 };
 
-void printShoppingList()
+void getShoppingList(vector<shoppingItem> &shoppingList)
 {
-
-    // Open the file stream
-    ifstream file("shopping-list.txt", ios::in | ios::app);
-
-    // Check if the file was opened successfully
+    fstream file;
+    file.open("shopping-list.txt", ios::in);
     if (!file.is_open())
     {
-        cerr << "Error: Failed to open file!" << endl;
+        cout << "Your Shopping List is empty" << endl;
         return;
+    }
+
+    string itemName;
+    int itemAmount;
+    double itemPrice;
+
+    while (!file.eof())
+    {
+        file >> itemName;
+        file >> itemAmount;
+        file >> itemPrice;
+
+        shoppingList.push_back({itemName, itemAmount, itemPrice});
+    }
+
+    shoppingList.pop_back();
+
+    file.close();
+    cout << "Shopping List has been imported" << endl;
+}
+
+void printShoppingList(vector<shoppingItem> shoppingList)
+{
+
+    if (shoppingList.size() == 0)
+    {
+        printf("Shopping List is Empty\n");
+        return;
+    }
+
+    for (int i = 0; i < shoppingList.size(); i++)
+    {
+        shoppingItem current = shoppingList.at(i);
+
+        cout << current.amount << " " << current.name << " for $" << current.price << " each." << endl;
     }
 }
 
-void printTotalPrice() {}
+void printTotalPrice(vector<shoppingItem> &shoppingList) {}
 
-void removeByName()
+void removeByName(vector<shoppingItem> &shoppingList)
 {
-    printf("Please Input Name of Item You Want to Remove\n");
+    string input;
+    bool inVector = false;
+    int i;
+
+    do
+    {
+        printf("Please Input Item You Want To Remove\n");
+        printf("Or q to Quit back to Main Menu\n");
+        cin >> input;
+
+        for (i = 0; i < shoppingList.size(); i++)
+        {
+            shoppingItem curr = shoppingList.at(i);
+            if (curr.name == input)
+            {
+                inVector = true;
+                break;
+            }
+        }
+        if (!inVector)
+        {
+            cout << endl
+                 << "Item isn't in List" << endl;
+            cout << "Please Try Again" << endl;
+            cout << endl;
+        }
+
+    } while (!inVector && input != "q" && input != "Q");
+    if (input == "q" || input == "Q")
+    {
+        cout << "Returning to Main Menu..." << endl;
+        return;
+    }
+
+    fstream file;
+    file.open("shopping-list.txt", ios::out | ios::binary);
+
+    if (!file.is_open())
+    {
+        printf("Error: unable to delete item\nTry Again");
+    }
+
+    shoppingList.erase(shoppingList.begin() + i);
+
+    for (int i = 0; i < shoppingList.size(); i++)
+    {
+        shoppingItem curr = shoppingList.at(i);
+
+        cout << curr.name << "\n";
+        cout << curr.amount << "\n";
+        cout << curr.price << "\n";
+
+        file << curr.name << " ";
+        file << curr.amount << " ";
+        file << curr.price << endl;
+    }
+
+    file.close();
 }
 
-void addByName()
+void addByName(vector<shoppingItem> &shoppingList)
 {
     fstream file;
     file.open("shopping-list.txt", ios::app);
@@ -57,11 +147,18 @@ void addByName()
     file << itemName << " ";
     file << itemAmount << " ";
     file << itemPrice << endl;
+
+    file.close();
+
+    shoppingList.push_back({itemName, itemAmount, itemPrice});
 }
 
 int main()
 {
     char primary_input;
+
+    vector<shoppingItem> shoppingList;
+    getShoppingList(shoppingList);
 
     do
     {
@@ -77,25 +174,26 @@ int main()
         cout << "*******************************************" << endl;
         // get user input
         cin >> primary_input;
+        cout << endl;
 
         // choose a branch depending on the input
         switch (primary_input)
         {
         case 'l':
         case 'L':
-            printShoppingList();
+            printShoppingList(shoppingList);
             break;
         case 't':
         case 'T':
-            printTotalPrice();
+            printTotalPrice(shoppingList);
             break;
         case 'r':
         case 'R':
-            removeByName();
+            removeByName(shoppingList);
             break;
         case 'a':
         case 'A':
-            addByName();
+            addByName(shoppingList);
             break;
         case 'q':
         case 'Q':
