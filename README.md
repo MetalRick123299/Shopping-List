@@ -1,6 +1,6 @@
 # Shopping List
 
-Shopping List is an Application built with C++ thta allows you to mange a Shopping List
+Shopping List is an Application built with C++ that allows you to mange a Shopping List
 
 ## Features
 
